@@ -1,16 +1,13 @@
 package com.example.jdbc.service;
 
-import com.example.jdbc.dto.StudentRequest;
-import com.example.jdbc.dto.StudentResponse;
+import com.example.jdbc.dto.request.StudentRequest;
+import com.example.jdbc.dto.response.StudentResponse;
 import java.util.List;
 
 public interface StudentService {
-    int createStudent(StudentRequest request);
-    List<StudentResponse> getAllStudents();
-    StudentResponse getStudentById(Long id);
-    int updateStudent(Long id, StudentRequest request);
-    int deleteStudent(Long id);
-    int countStudents();
-    boolean existsByEmail(String email);
-    List<StudentResponse> findFilteredStudents(String search, String course, Integer minAge, Integer maxAge);
+    StudentResponse create(StudentRequest request);
+    List<StudentResponse> getAll();
+    StudentResponse getById(Long id);
+    int update(Long id, StudentRequest request);
+    int delete(Long id);
 }
