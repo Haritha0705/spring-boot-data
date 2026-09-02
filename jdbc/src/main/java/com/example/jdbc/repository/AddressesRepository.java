@@ -1,5 +1,6 @@
 package com.example.jdbc.repository;
 
+import com.example.jdbc.enums.AddressType;
 import com.example.jdbc.model.Addresses;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -33,7 +34,7 @@ public class AddressesRepository {
             entity.setAddressLine(rs.getString("address_line"));
             entity.setCity(rs.getString("city"));
             entity.setCountry(rs.getString("country"));
-            entity.setAddressType(rs.getString("address_type"));
+            entity.setAddressType(AddressType.valueOf(rs.getString("address_type")));
             entity.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
             return entity;
         });
@@ -47,7 +48,7 @@ public class AddressesRepository {
             entity.setAddressLine(rs.getString("address_line"));
             entity.setCity(rs.getString("city"));
             entity.setCountry(rs.getString("country"));
-            entity.setAddressType(rs.getString("address_type"));
+            entity.setAddressType(AddressType.valueOf(rs.getString("address_type")));
             entity.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
             return entity;
         }, id);

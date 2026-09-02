@@ -4,21 +4,17 @@ import java.time.LocalDateTime;
 
 public class Instructors {
 
-    private Integer id;
+    private int id;
 
     private String name;
 
     private String email;
 
-    private Integer managerId;
+    private int managerId;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
 
     public Instructors() {}
 
@@ -58,8 +54,11 @@ public class Instructors {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+
+    }
 }

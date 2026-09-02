@@ -6,11 +6,11 @@ import java.math.BigDecimal;
 
 public class Profiles {
 
-    private Integer id;
+    private int id;
 
-    private Integer studentId;
+    private int studentId;
 
-    private LocalDate dateOfBirth;
+    private LocalDateTime dateOfBirth;
 
     private String gender;
 
@@ -42,11 +42,11 @@ public class Profiles {
         this.studentId = studentId;
     }
 
-    public LocalDate getDateOfBirth() {
+    public LocalDateTime getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
+    public void setDateOfBirth(LocalDateTime dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -71,7 +71,6 @@ public class Profiles {
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 
+    }
 }

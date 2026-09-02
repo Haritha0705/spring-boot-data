@@ -1,15 +1,14 @@
 package com.example.jdbc.dto.response;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record ProfilesResponse(
 
-        Integer id,
+        int id,
 
-        Integer studentId,
+        int studentId,
 
-        LocalDate dateOfBirth,
+        LocalDateTime dateOfBirth,
 
         String gender,
 

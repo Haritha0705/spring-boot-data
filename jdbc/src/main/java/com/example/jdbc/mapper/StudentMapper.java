@@ -6,7 +6,7 @@ import com.example.jdbc.model.*;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StudentMapper {
+public class  StudentMapper {
 
     public Student toEntity(StudentRequest request) {
         if (request == null) return null;

@@ -6,6 +6,6 @@ public record InstructorsRequest(
 
         String email,
 
-        Integer managerId
+        int managerId
 
 ) {}

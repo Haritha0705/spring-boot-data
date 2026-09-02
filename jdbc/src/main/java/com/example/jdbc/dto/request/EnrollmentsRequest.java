@@ -1,13 +1,14 @@
 package com.example.jdbc.dto.request;
 
-import java.time.LocalDate;
+import com.example.jdbc.enums.EnrollmentStatus;
+import java.time.LocalDateTime;
 
 public record EnrollmentsRequest(
 
-        Integer courseId,
+        int courseId,
 
-        LocalDate enrollmentDate,
+        LocalDateTime enrollmentDate,
 
-        String status
+        EnrollmentStatus status
 
 ) {}

@@ -28,7 +28,7 @@ public class CoursesRepository {
             entity.setId(rs.getInt("id"));
             entity.setCourseCode(rs.getInt("course_code"));
             entity.setName(rs.getString("name"));
-            entity.setFee(rs.getBigDecimal("fee"));
+            entity.setFee(rs.getFloat("fee"));
             entity.setInstructorId(rs.getInt("instructor_id"));
             entity.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
             entity.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
@@ -42,7 +42,7 @@ public class CoursesRepository {
             entity.setId(rs.getInt("id"));
             entity.setCourseCode(rs.getInt("course_code"));
             entity.setName(rs.getString("name"));
-            entity.setFee(rs.getBigDecimal("fee"));
+            entity.setFee(rs.getFloat("fee"));
             entity.setInstructorId(rs.getInt("instructor_id"));
             entity.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
             entity.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));

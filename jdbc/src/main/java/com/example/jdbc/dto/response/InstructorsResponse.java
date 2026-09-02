@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 
 public record InstructorsResponse(
 
-        Integer id,
+        int id,
 
-        String name, String email,
+        String name,
 
-        Integer managerId,
+        String email,
+
+        int managerId,
 
         LocalDateTime createdAt,
 

@@ -1,18 +1,21 @@
 package com.example.jdbc.dto.request;
 
+import com.example.jdbc.enums.PaymentMethod;
+import com.example.jdbc.enums.PaymentStatus;
+
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
 public record PaymentsRequest(
 
-        Integer studentId,
+        int studentId,
 
-        BigDecimal amount,
+        float amount,
 
-        String paymentMethod,
+        PaymentMethod paymentMethod,
 
         LocalDateTime paymentDate,
 
-        String status
+        PaymentStatus status
 
 ) {}

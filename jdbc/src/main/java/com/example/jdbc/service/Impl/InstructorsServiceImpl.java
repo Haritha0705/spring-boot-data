@@ -12,30 +12,37 @@ import java.util.List;
 
 @Service
 public class InstructorsServiceImpl implements InstructorsService {
+
     private final InstructorsRepository repository;
     private final InstructorsMapper mapper;
+
     public InstructorsServiceImpl(InstructorsRepository repository, InstructorsMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
+
     @Override
     public int create(InstructorsRequest request) {
         Instructors entity = mapper.toEntity(request);
         return repository.save(entity);
     }
+
     @Override
     public List<InstructorsResponse> getAll() {
         return repository.findAll().stream().map(mapper::toResponse).collect(Collectors.toList());
     }
+
     @Override
     public InstructorsResponse getById(Integer id) {
         return mapper.toResponse(repository.findById(id));
     }
+
     @Override
     public int update(Integer id, InstructorsRequest request) {
         Instructors entity = mapper.toEntity(request);
         return repository.update(id, entity);
     }
+
     @Override
     public int delete(Integer id) {
         return repository.delete(id);

@@ -1,14 +1,16 @@
 package com.example.jdbc.dto.response;
 
+import com.example.jdbc.enums.ContactType;
+
 import java.time.LocalDateTime;
 
 public record ContactsResponse(
 
-        Integer id,
+        int id,
 
-        Integer studentId,
+        int studentId,
 
-        String contactType,
+        ContactType contactType,
 
         String contactValue,
 

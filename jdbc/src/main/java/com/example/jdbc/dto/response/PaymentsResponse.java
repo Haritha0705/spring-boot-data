@@ -1,21 +1,24 @@
 package com.example.jdbc.dto.response;
 
+import com.example.jdbc.enums.PaymentMethod;
+import com.example.jdbc.enums.PaymentStatus;
+
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
 public record PaymentsResponse(
 
-        Integer id,
+        int id,
 
-        Integer studentId,
+        int studentId,
 
-        BigDecimal amount,
+        float amount,
 
-        String paymentMethod,
+        PaymentMethod paymentMethod,
 
         LocalDateTime paymentDate,
 
-        String status,
+        PaymentStatus status,
 
         LocalDateTime createdAt
 

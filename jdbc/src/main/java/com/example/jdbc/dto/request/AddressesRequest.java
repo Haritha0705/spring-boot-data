@@ -1,5 +1,7 @@
 package com.example.jdbc.dto.request;
 
+import com.example.jdbc.enums.AddressType;
+
 public record AddressesRequest(
 
         String addressLine,
@@ -8,6 +10,6 @@ public record AddressesRequest(
 
         String country,
 
-        String addressType
+        AddressType addressType
 
 ) {}

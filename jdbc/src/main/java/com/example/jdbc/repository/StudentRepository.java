@@ -34,7 +34,7 @@ public class StudentRepository {
         String sql = "SELECT id, name, email, age, created_at, updated_at FROM students ORDER BY id DESC";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Student entity = new Student();
-            entity.setId(rs.getLong("id"));
+            entity.setId(rs.getInt("id"));
             entity.setName(rs.getString("name"));
             entity.setEmail(rs.getString("email"));
             entity.setAge(rs.getInt("age"));
@@ -48,7 +48,7 @@ public class StudentRepository {
         String sql = "SELECT id, name, email, age, created_at, updated_at FROM students WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             Student entity = new Student();
-            entity.setId(rs.getLong("id"));
+            entity.setId(rs.getInt("id"));
             entity.setName(rs.getString("name"));
             entity.setEmail(rs.getString("email"));
             entity.setAge(rs.getInt("age"));

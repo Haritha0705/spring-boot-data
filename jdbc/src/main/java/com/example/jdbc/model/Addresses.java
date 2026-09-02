@@ -1,12 +1,13 @@
 package com.example.jdbc.model;
 
+import com.example.jdbc.enums.AddressType;
 import java.time.LocalDateTime;
 
 public class Addresses {
 
-    private Integer id;
+    private int id;
 
-    private Integer studentId;
+    private int studentId;
 
     private String addressLine;
 
@@ -14,11 +15,20 @@ public class Addresses {
 
     private String country;
 
-    private String addressType;
+    private AddressType addressType;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    public Addresses(int id, int studentId, String addressLine, String city, String country, AddressType addressType) {
+        this.id = id;
+        this.studentId = studentId;
+        this.addressLine = addressLine;
+        this.city = city;
+        this.country = country;
+        this.addressType = addressType;
+    }
 
     public Addresses() {}
 
@@ -47,7 +57,7 @@ public class Addresses {
     }
 
     public String getCity() {
-        return city;
+        return null;
     }
 
     public void setCity(String city) {
@@ -66,11 +76,11 @@ public class Addresses {
         return updatedAt;
     }
 
-    public String getAddressType() {
+    public AddressType getAddressType() {
         return addressType;
     }
 
-    public void setAddressType(String addressType) {
+    public void setAddressType(AddressType addressType) {
         this.addressType = addressType;
     }
 
@@ -79,7 +89,5 @@ public class Addresses {
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
-
 }

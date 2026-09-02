@@ -1,21 +1,38 @@
 package com.example.jdbc.model;
 
+import com.example.jdbc.enums.PaymentMethod;
+import com.example.jdbc.enums.PaymentStatus;
+
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
 public class Payments {
 
-    private Integer id;
+    private int id;
 
-    private Integer studentId;
+    private int studentId;
 
-    private BigDecimal amount;
+    private int courseId;
 
-    private String paymentMethod;
+    private float amount;
+
+    public int getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
+    }
+
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
+    }
+
+    private PaymentMethod paymentMethod;
 
     private LocalDateTime paymentDate;
 
-    private String status;
+    private PaymentStatus status;
 
     private LocalDateTime createdAt;
 
@@ -41,19 +58,19 @@ public class Payments {
         this.studentId = studentId;
     }
 
-    public BigDecimal getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
-    public String getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
@@ -65,11 +82,11 @@ public class Payments {
         this.paymentDate = paymentDate;
     }
 
-    public String getStatus() {
+    public PaymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PaymentStatus status) {
         this.status = status;
     }
 

@@ -4,12 +4,19 @@ import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
 public class Courses {
-    private Integer id;
-    private Integer courseCode;
+
+    private int id;
+
+    private int courseCode;
+
     private String name;
-    private BigDecimal fee;
-    private Integer instructorId;
+
+    private float fee;
+
+    private int instructorId;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
 
     public Courses() {}
@@ -38,11 +45,11 @@ public class Courses {
         this.name = name;
     }
 
-    public BigDecimal getFee() {
+    public float getFee() {
         return fee;
     }
 
-    public void setFee(BigDecimal fee) {
+    public void setFee(float fee) {
         this.fee = fee;
     }
 

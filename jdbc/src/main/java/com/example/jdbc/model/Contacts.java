@@ -1,14 +1,15 @@
 package com.example.jdbc.model;
 
+import com.example.jdbc.enums.ContactType;
 import java.time.LocalDateTime;
 
 public class Contacts {
 
-    private Integer id;
+    private int id;
 
-    private Integer studentId;
+    private int studentId;
 
-    private String contactType;
+    private ContactType contactType;
 
     private String contactValue;
 
@@ -38,11 +39,11 @@ public class Contacts {
         this.studentId = studentId;
     }
 
-    public String getContactType() {
+    public ContactType getContactType() {
         return contactType;
     }
 
-    public void setContactType(String contactType) {
+    public void setContactType(ContactType contactType) {
         this.contactType = contactType;
     }
 
@@ -59,7 +60,6 @@ public class Contacts {
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 
+    }
 }

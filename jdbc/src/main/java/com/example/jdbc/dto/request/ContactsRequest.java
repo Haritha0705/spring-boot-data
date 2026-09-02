@@ -1,10 +1,12 @@
 package com.example.jdbc.dto.request;
 
+import com.example.jdbc.enums.ContactType;
+
 public record ContactsRequest(
 
-        Integer studentId,
+        int studentId,
 
-        String contactType,
+        ContactType contactType,
 
         String contactValue
 

@@ -1,12 +1,13 @@
 package com.example.jdbc.dto.response;
 
+import com.example.jdbc.enums.AddressType;
 import java.time.LocalDateTime;
 
 public record AddressesResponse(
 
-        Integer id,
+        int id,
 
-        Integer studentId,
+        int studentId,
 
         String addressLine,
 
@@ -14,7 +15,7 @@ public record AddressesResponse(
 
         String country,
 
-        String addressType,
+        AddressType addressType,
 
         LocalDateTime createdAt,
 

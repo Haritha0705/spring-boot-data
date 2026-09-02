@@ -27,7 +27,7 @@ public class ProfilesRepository {
             Profiles entity = new Profiles();
             entity.setId(rs.getInt("id"));
             entity.setStudentId(rs.getInt("student_id"));
-            entity.setDateOfBirth(rs.getObject("date_of_birth", LocalDate.class));
+            entity.setDateOfBirth(rs.getObject("date_of_birth", LocalDateTime.class));
             entity.setGender(rs.getString("gender"));
             entity.setBio(rs.getString("bio"));
             entity.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
@@ -40,7 +40,7 @@ public class ProfilesRepository {
             Profiles entity = new Profiles();
             entity.setId(rs.getInt("id"));
             entity.setStudentId(rs.getInt("student_id"));
-            entity.setDateOfBirth(rs.getObject("date_of_birth", LocalDate.class));
+            entity.setDateOfBirth(rs.getObject("date_of_birth", LocalDateTime.class));
             entity.setGender(rs.getString("gender"));
             entity.setBio(rs.getString("bio"));
             entity.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));

@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS student_profiles CASCADE;
 DROP TABLE IF EXISTS courses CASCADE;
 DROP TABLE IF EXISTS instructors CASCADE;
 DROP TABLE IF EXISTS students CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
 
 -- 1. STUDENTS
 
@@ -143,7 +144,12 @@ CREATE TABLE enrollments (
                                  UNIQUE (student_id, course_id),
 
                              CONSTRAINT check_enrollment_status
-                                 CHECK (status IN ('ACTIVE','COMPLETED','DROPPED'))
+                                 CHECK (status IN (
+                                                   'ACTIVE',
+                                                   'COMPLETED',
+                                                   'DROPPED'
+                                                  )
+                                     )
 );
 
 -- 6. PAYMENTS
@@ -170,10 +176,21 @@ CREATE TABLE payments (
                               ON DELETE CASCADE,
 
                           CONSTRAINT check_payment_method
-                              CHECK (payment_method IN ('CASH','CARD','BANK_TRANSFER','ONLINE')),
+                              CHECK (payment_method IN (
+                                                        'CASH',
+                                                        'CARD',
+                                                        'BANK_TRANSFER',
+                                                        'ONLINE'
+                                                       )
+                                  ),
 
                           CONSTRAINT check_payment_status
-                              CHECK (status IN ('SUCCESS','PENDING','FAILED'))
+                              CHECK (status IN (
+                                                'SUCCESS',
+                                                'PENDING',
+                                                'FAILED'
+                                               )
+                                  )
 );
 
 -- 7. ADDRESSES
@@ -201,7 +218,12 @@ CREATE TABLE addresses (
                                ON DELETE CASCADE,
 
                            CONSTRAINT check_address_type
-                               CHECK (address_type IN ('HOME','WORK','OTHER'))
+                               CHECK (address_type IN (
+                                                       'HOME',
+                                                       'WORK',
+                                                       'OTHER'
+                                                      )
+                                   )
 );
 
 -- 8. NOTIFICATIONS
@@ -248,7 +270,61 @@ CREATE TABLE student_contacts (
                                       ON DELETE CASCADE,
 
                                   CONSTRAINT check_contact_type
-                                      CHECK (contact_type IN ('PHONE','WHATSAPP','EMAIL'))
+                                      CHECK (contact_type IN (
+                                                              'PHONE',
+                                                              'WHATSAPP',
+                                                              'EMAIL'
+                                                             )
+                                          )
+);
+
+-- 10. ORDERS
+-- STUDENT 1 : N ORDERS
+-- Each order represents a purchase attempt for a course.
+
+CREATE TABLE orders (
+                        id SERIAL PRIMARY KEY,
+
+                        student_id INT NOT NULL,
+
+                        course_id INT NOT NULL,
+
+                        payment_id INT,
+
+                        amount DECIMAL(10, 2) NOT NULL
+                            CHECK (amount > 0),
+
+                        status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+                        CONSTRAINT fk_order_student
+                            FOREIGN KEY (student_id)
+                                REFERENCES students(id)
+                                ON DELETE CASCADE,
+
+                        CONSTRAINT fk_order_course
+                            FOREIGN KEY (course_id)
+                                REFERENCES courses(id)
+                                ON DELETE CASCADE,
+
+                        CONSTRAINT fk_order_payment
+                            FOREIGN KEY (payment_id)
+                                REFERENCES payments(id)
+                                ON DELETE SET NULL,
+
+                        CONSTRAINT check_order_status
+                            CHECK (
+                                status IN (
+                                           'PENDING',
+                                           'PAID',
+                                           'PAYMENT_FAILED',
+                                           'COMPLETED',
+                                           'CANCELLED'
+                                    )
+                                )
 );
 
 -- INDEXES
@@ -322,3 +398,17 @@ CREATE INDEX idx_student_contacts_student_id
 
 CREATE INDEX idx_student_contacts_type
     ON student_contacts(contact_type);
+
+-- STUDENT ORDERS
+
+CREATE INDEX idx_orders_student_id
+    ON orders(student_id);
+
+CREATE INDEX idx_orders_course_id
+    ON orders(course_id);
+
+CREATE INDEX idx_orders_payment_id
+    ON orders(payment_id);
+
+CREATE INDEX idx_orders_status
+    ON orders(status);

@@ -1,27 +1,24 @@
 package com.example.jdbc.model;
 
-import java.time.LocalDate;
+import com.example.jdbc.enums.EnrollmentStatus;
+
 import java.time.LocalDateTime;
 
 public class Enrollments {
 
-    private Integer id;
+    private int id;
 
-    private Integer studentId;
+    private int studentId;
 
-    private Integer courseId;
+    private int courseId;
 
-    private LocalDate enrollmentDate;
+    private LocalDateTime enrollmentDate;
 
-    private String status;
+    private EnrollmentStatus status;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
 
     public Enrollments() {}
 
@@ -49,19 +46,19 @@ public class Enrollments {
         this.courseId = courseId;
     }
 
-    public LocalDate getEnrollmentDate() {
+    public LocalDateTime getEnrollmentDate() {
         return enrollmentDate;
     }
 
-    public void setEnrollmentDate(LocalDate enrollmentDate) {
+    public void setEnrollmentDate(LocalDateTime enrollmentDate) {
         this.enrollmentDate = enrollmentDate;
     }
 
-    public String getStatus() {
+    public EnrollmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(EnrollmentStatus status) {
         this.status = status;
     }
 
@@ -69,7 +66,11 @@ public class Enrollments {
         return createdAt;
     }
 
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
     public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+
     }
 }

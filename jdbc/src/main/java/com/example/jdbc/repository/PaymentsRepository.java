@@ -1,5 +1,7 @@
 package com.example.jdbc.repository;
 
+import com.example.jdbc.enums.PaymentMethod;
+import com.example.jdbc.enums.PaymentStatus;
 import com.example.jdbc.model.Payments;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -10,17 +12,20 @@ import java.math.BigDecimal;
 
 @Repository
 public class PaymentsRepository {
+
     private final JdbcTemplate jdbcTemplate;
+
     public PaymentsRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
     public int save(Payments entity) {
-        String sql = "INSERT INTO payments(student_id, amount, payment_method, payment_date, status) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO payments(student_id, course_id, amount, payment_method, payment_date, status) VALUES (?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql, entity.getStudentId(),
+                entity.getCourseId(),
                 entity.getAmount(),
-                entity.getPaymentMethod(),
+                entity.getPaymentMethod() != null ? entity.getPaymentMethod().name() : null,
                 entity.getPaymentDate(),
-                entity.getStatus());
+                entity.getStatus() != null ? entity.getStatus().name() : null);
     }
     public List<Payments> findAll() {
         String sql = "SELECT id, student_id, amount, payment_method, payment_date, status FROM payments ORDER BY id DESC";
@@ -28,10 +33,10 @@ public class PaymentsRepository {
             Payments entity = new Payments();
             entity.setId(rs.getInt("id"));
             entity.setStudentId(rs.getInt("student_id"));
-            entity.setAmount(rs.getBigDecimal("amount"));
-            entity.setPaymentMethod(rs.getString("payment_method"));
+            entity.setAmount(rs.getFloat("amount"));
+            entity.setPaymentMethod(PaymentMethod.valueOf(rs.getString("payment_method")));
             entity.setPaymentDate(rs.getObject("payment_date", LocalDateTime.class));
-            entity.setStatus(rs.getString("status"));
+            entity.setStatus(PaymentStatus.valueOf(rs.getString("status")));
             return entity;
         });
     }
@@ -41,10 +46,10 @@ public class PaymentsRepository {
             Payments entity = new Payments();
             entity.setId(rs.getInt("id"));
             entity.setStudentId(rs.getInt("student_id"));
-            entity.setAmount(rs.getBigDecimal("amount"));
-            entity.setPaymentMethod(rs.getString("payment_method"));
+            entity.setAmount(rs.getFloat("amount"));
+            entity.setPaymentMethod(PaymentMethod.valueOf(rs.getString("payment_method")));
             entity.setPaymentDate(rs.getObject("payment_date", LocalDateTime.class));
-            entity.setStatus(rs.getString("status"));
+            entity.setStatus(PaymentStatus.valueOf(rs.getString("status")));
             return entity;
         }, id);
     }
@@ -59,5 +64,36 @@ public class PaymentsRepository {
     public int delete(Integer id) {
         String sql = "DELETE FROM payments WHERE id = ?";
         return jdbcTemplate.update(sql, id);
+    }
+
+    // UPDATE PAYMENT TO SUCCESS
+    public void markSuccessful(int paymentId, String transactionId) {
+        String sql = """
+                UPDATE payments
+                SET 
+                    status = 'SUCCESS',
+                    transaction_id = ?
+                WHERE id = ?
+                """;
+        jdbcTemplate.update(
+                sql,
+                transactionId,
+                paymentId
+        );
+    }
+
+    // UPDATE PAYMENT TO FAILED
+    public void markFailed(int paymentId,
+                           String reason) {
+        String sql = """
+                UPDATE payments
+                SET 
+                    status = 'FAILED'
+                WHERE id = ?
+                """;
+        jdbcTemplate.update(
+                sql,
+                paymentId
+        );
     }
 }

@@ -1,5 +1,6 @@
 package com.example.jdbc.repository;
 
+import com.example.jdbc.enums.ContactType;
 import com.example.jdbc.model.Contacts;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -26,7 +27,7 @@ public class ContactsRepository {
             Contacts entity = new Contacts();
             entity.setId(rs.getInt("id"));
             entity.setStudentId(rs.getInt("student_id"));
-            entity.setContactType(rs.getString("contact_type"));
+            entity.setContactType(ContactType.valueOf(rs.getString("contact_type")));
             entity.setContactValue(rs.getString("contact_value"));
             entity.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
             return entity;
@@ -38,7 +39,7 @@ public class ContactsRepository {
             Contacts entity = new Contacts();
             entity.setId(rs.getInt("id"));
             entity.setStudentId(rs.getInt("student_id"));
-            entity.setContactType(rs.getString("contact_type"));
+            entity.setContactType(ContactType.valueOf(rs.getString("contact_type")));
             entity.setContactValue(rs.getString("contact_value"));
             entity.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
             return entity;

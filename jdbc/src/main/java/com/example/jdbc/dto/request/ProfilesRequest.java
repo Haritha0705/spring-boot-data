@@ -1,12 +1,12 @@
 package com.example.jdbc.dto.request;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record ProfilesRequest(
 
-        Integer studentId,
+        int studentId,
 
-        LocalDate dateOfBirth,
+        LocalDateTime dateOfBirth,
 
         String gender,
 

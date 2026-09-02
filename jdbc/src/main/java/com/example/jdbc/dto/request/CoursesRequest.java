@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 
 public record CoursesRequest(
 
-        Integer courseCode,
+        int courseCode,
 
         String name,
 
-        BigDecimal fee,
+        float fee,
 
-        Integer instructorId
+        int instructorId
 
 ) {}

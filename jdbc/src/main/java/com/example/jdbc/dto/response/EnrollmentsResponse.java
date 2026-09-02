@@ -1,19 +1,19 @@
 package com.example.jdbc.dto.response;
 
-import java.time.LocalDate;
+import com.example.jdbc.enums.EnrollmentStatus;
 import java.time.LocalDateTime;
 
 public record EnrollmentsResponse(
 
-        Integer id,
+        int id,
 
-        Integer studentId,
+        int studentId,
 
-        Integer courseId,
+        int courseId,
 
-        LocalDate enrollmentDate,
+        LocalDateTime enrollmentDate,
 
-        String status,
+        EnrollmentStatus status,
 
         LocalDateTime createdAt,
 

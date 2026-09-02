@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 
 public record NotificationsResponse(
 
-        Integer id,
+        int id,
 
-        Integer studentId,
+        int studentId,
 
         String title,
 

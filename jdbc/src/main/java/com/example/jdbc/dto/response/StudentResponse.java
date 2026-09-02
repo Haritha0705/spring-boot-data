@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public record StudentResponse(
 
-        Long id,
+        int id,
 
         String name,
 

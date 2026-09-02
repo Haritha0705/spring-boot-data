@@ -3,11 +3,17 @@ package com.example.jdbc.model;
 import java.time.LocalDateTime;
 
 public class Notifications {
-    private Integer id;
-    private Integer studentId;
+
+    private int id;
+
+    private int studentId;
+
     private String title;
+
     private String message;
+
     private Boolean isRead;
+
     private LocalDateTime createdAt;
 
     public Notifications() {}

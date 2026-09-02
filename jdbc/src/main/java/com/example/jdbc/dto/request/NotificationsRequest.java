@@ -2,7 +2,7 @@ package com.example.jdbc.dto.request;
 
 public record NotificationsRequest(
 
-        Integer studentId,
+        int studentId,
 
         String title,
 

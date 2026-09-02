@@ -1,5 +1,6 @@
 package com.example.jdbc.repository;
 
+import com.example.jdbc.enums.EnrollmentStatus;
 import com.example.jdbc.model.Enrollments;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -28,8 +29,8 @@ public class EnrollmentsRepository {
             entity.setId(rs.getInt("id"));
             entity.setStudentId(rs.getInt("student_id"));
             entity.setCourseId(rs.getInt("course_id"));
-            entity.setEnrollmentDate(rs.getObject("enrollment_date", LocalDate.class));
-            entity.setStatus(rs.getString("status"));
+            entity.setEnrollmentDate(rs.getObject("enrollment_date", LocalDateTime.class));
+            entity.setStatus(EnrollmentStatus.valueOf(rs.getString("status")));
             entity.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
             return entity;
         });
@@ -41,8 +42,8 @@ public class EnrollmentsRepository {
             entity.setId(rs.getInt("id"));
             entity.setStudentId(rs.getInt("student_id"));
             entity.setCourseId(rs.getInt("course_id"));
-            entity.setEnrollmentDate(rs.getObject("enrollment_date", LocalDate.class));
-            entity.setStatus(rs.getString("status"));
+            entity.setEnrollmentDate(rs.getObject("enrollment_date", LocalDateTime.class));
+            entity.setStatus(EnrollmentStatus.valueOf(rs.getString("status")));
             entity.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
             return entity;
         }, id);
@@ -57,5 +58,21 @@ public class EnrollmentsRepository {
     public int delete(Integer id) {
         String sql = "DELETE FROM enrollments WHERE id = ?";
         return jdbcTemplate.update(sql, id);
+    }
+    
+    public Enrollments findByStudentIdAndCourseId(Integer studentId, Integer courseId) {
+        String sql = "SELECT id, student_id, course_id, enrollment_date, status, created_at FROM enrollments WHERE student_id = ? AND course_id = ?";
+        List<Enrollments> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Enrollments entity = new Enrollments();
+            entity.setId(rs.getInt("id"));
+            entity.setStudentId(rs.getInt("student_id"));
+            entity.setCourseId(rs.getInt("course_id"));
+            entity.setEnrollmentDate(rs.getObject("enrollment_date", LocalDateTime.class));
+            entity.setStatus(EnrollmentStatus.valueOf(rs.getString("status")));
+            entity.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+            return entity;
+        }, studentId, courseId);
+        
+        return results.isEmpty() ? null : results.get(0);
     }
 }
