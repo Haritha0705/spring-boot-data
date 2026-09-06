@@ -5,15 +5,13 @@ import java.math.BigDecimal;
 
 public record CoursesResponse(
 
-        int id,
+        Long id,
 
         int courseCode,
 
         String name,
 
         float fee,
-
-        int instructorId,
 
         LocalDateTime createdAt,
 

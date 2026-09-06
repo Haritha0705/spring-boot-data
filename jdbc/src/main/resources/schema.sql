@@ -1,414 +1,195 @@
--- DROP TABLES
-
-DROP TABLE IF EXISTS student_contacts CASCADE;
-DROP TABLE IF EXISTS notifications CASCADE;
-DROP TABLE IF EXISTS payments CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS profiles CASCADE;
 DROP TABLE IF EXISTS addresses CASCADE;
-DROP TABLE IF EXISTS enrollments CASCADE;
-DROP TABLE IF EXISTS student_profiles CASCADE;
+DROP TABLE IF EXISTS profiles CASCADE;
 DROP TABLE IF EXISTS courses CASCADE;
-DROP TABLE IF EXISTS instructors CASCADE;
-DROP TABLE IF EXISTS students CASCADE;
+DROP TABLE IF EXISTS enrollments CASCADE;
+DROP TABLE IF EXISTS payments CASCADE;
+DROP TABLE IF EXISTS notifications CASCADE;
+DROP TABLE IF EXISTS contacts CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 
--- 1. STUDENTS
+-- USERS
 
-CREATE TABLE students (
-                          id SERIAL PRIMARY KEY,
+CREATE TABLE users (
+                       id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                       name VARCHAR(100) NOT NULL,
+                       email VARCHAR(150) NOT NULL,
+                       password VARCHAR(255) NOT NULL,
+                       is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-                          name VARCHAR(100) NOT NULL,
+                       CONSTRAINT uq_users_email UNIQUE (email)
+);
 
-                          email VARCHAR(150) NOT NULL,
+-- ADDRESSESff
+-- STUDENT 1 : N ADDRESSES
 
-                          age INT CHECK (age >= 16) NOT NULL,
+CREATE TABLE addresses (
+                           id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                           user_id BIGINT NOT NULL,
+                           address_line VARCHAR(255) NOT NULL,
+                           city VARCHAR(100) NOT NULL,
+                           country VARCHAR(100) DEFAULT 'Sri Lanka',
+                           address_type VARCHAR(20) DEFAULT 'HOME',
+                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
+                           CONSTRAINT addresses_user_fk
+                               FOREIGN KEY (user_id)
+                                   REFERENCES users(id)
+                                   ON UPDATE CASCADE
+                                   ON DELETE CASCADE,
+
+                           CONSTRAINT check_address_type CHECK (address_type IN ('HOME', 'WORK', 'OTHER'))
+);
+
+-- STUDENT PROFILES
+-- STUDENT 1 : 1 PROFILE
+
+CREATE TABLE profiles (
+                          id BIGINT PRIMARY KEY,
+                          date_of_birth DATE,
+                          gender VARCHAR(20),
+                          bio TEXT,
                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
                           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-                          CONSTRAINT uq_student_email
-                              UNIQUE (email)
+                          CONSTRAINT fk_user_profile
+                              FOREIGN KEY (id)
+                                  REFERENCES users(id)
+                                  ON UPDATE CASCADE
+                                  ON DELETE CASCADE
 );
 
--- 2. STUDENT PROFILES
--- ONE-TO-ONE
--- students 1 : 1 student_profiles
-
-CREATE TABLE student_profiles (
-                                  id SERIAL PRIMARY KEY,
-
-                                  student_id INT NOT NULL,
-
-                                  date_of_birth DATE,
-
-                                  gender VARCHAR(20),
-
-                                  bio TEXT,
-
-                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-                                  CONSTRAINT uq_student_profile_student
-                                      UNIQUE (student_id),
-
-                                  CONSTRAINT fk_profile_student
-                                      FOREIGN KEY (student_id)
-                                      REFERENCES students(id)
-                                      ON DELETE CASCADE
-);
-
--- 3. INSTRUCTORS
--- SELF-REFERENCING RELATIONSHIP
--- instructor -> manager
--- One instructor can manage many instructors.
-
-CREATE TABLE instructors (
-                             id SERIAL PRIMARY KEY,
-
-                             name VARCHAR(100) NOT NULL,
-
-                             email VARCHAR(150) NOT NULL,
-
-                             manager_id INT,
-
-                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-                             CONSTRAINT uq_instructor_email
-                                 UNIQUE (email),
-
-                             CONSTRAINT fk_instructor_manager
-                                 FOREIGN KEY (manager_id)
-                                 REFERENCES instructors(id)
-                                 ON DELETE SET NULL
-);
-
--- 4. COURSES
--- instructors 1 : N courses
+-- COURSES
 
 CREATE TABLE courses (
-                         id SERIAL PRIMARY KEY,
-
-                         course_code INT NOT NULL,
-
+                         id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                         course_code VARCHAR(20) NOT NULL,
                          name VARCHAR(100) NOT NULL,
-
-                         fee DECIMAL(10, 2) NOT NULL
-                             CHECK (fee >= 0),
-
-                         instructor_id INT,
-
+                         fee DECIMAL(10, 2) NOT NULL CHECK (fee >= 0),
                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
                          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-                         CONSTRAINT uq_course_code
-                             UNIQUE (course_code),
-
-                         CONSTRAINT uq_course_name
-                             UNIQUE (name),
-
-                         CONSTRAINT fk_course_instructor
-                             FOREIGN KEY (instructor_id)
-                             REFERENCES instructors(id)
-                             ON DELETE SET NULL
+                         CONSTRAINT uq_course_code UNIQUE (course_code),
+                         CONSTRAINT uq_course_name UNIQUE (name)
 );
 
--- 5. ENROLLMENTS
--- MANY-TO-MANY
--- students N : M courses
--- students -> enrollments -> courses
+-- ENROLLMENTS
+-- STUDENTS N : M COURSES
 
 CREATE TABLE enrollments (
-                             id SERIAL PRIMARY KEY,
-
-                             student_id INT NOT NULL,
-
-                             course_id INT NOT NULL,
-
+                             id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                             user_id BIGINT NOT NULL,
+                             course_id BIGINT NOT NULL,
                              enrollment_date DATE DEFAULT CURRENT_DATE,
-
                              status VARCHAR(20) DEFAULT 'ACTIVE',
-
                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-                             CONSTRAINT fk_enrollment_student
-                                 FOREIGN KEY (student_id)
-                                 REFERENCES students(id)
-                                 ON DELETE CASCADE,
+                             CONSTRAINT fk_enrollment_user
+                                 FOREIGN KEY (user_id)
+                                     REFERENCES users(id)
+                                     ON UPDATE CASCADE
+                                     ON DELETE CASCADE,
 
                              CONSTRAINT fk_enrollment_course
                                  FOREIGN KEY (course_id)
-                                 REFERENCES courses(id)
-                                 ON DELETE CASCADE,
+                                     REFERENCES courses(id)
+                                     ON UPDATE CASCADE
+                                     ON DELETE CASCADE,
 
-                             CONSTRAINT uq_student_course
-                                 UNIQUE (student_id, course_id),
-
-                             CONSTRAINT check_enrollment_status
-                                 CHECK (status IN (
-                                                   'ACTIVE',
-                                                   'COMPLETED',
-                                                   'DROPPED'
-                                                  )
-                                     )
+                             CONSTRAINT uq_user_course UNIQUE (user_id, course_id),
+                             CONSTRAINT check_enrollment_status CHECK (status IN ('ACTIVE', 'COMPLETED', 'DROPPED'))
 );
 
--- 6. PAYMENTS
--- ONE-TO-MANY
--- students 1 : N payments
+-- PAYMENTS
+-- STUDENT 1 : N PAYMENTS
 
 CREATE TABLE payments (
-                          id SERIAL PRIMARY KEY,
-
-                          student_id INT NOT NULL,
-
-                          amount DECIMAL(10, 2) NOT NULL
-                              CHECK (amount > 0),
-
+                          id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                          user_id BIGINT NOT NULL,
+                          course_id BIGINT NOT NULL,
+                          amount DECIMAL(10, 2) NOT NULL CHECK (amount > 0),
                           payment_method VARCHAR(30) NOT NULL,
-
                           payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
                           status VARCHAR(20) DEFAULT 'SUCCESS',
 
-                          CONSTRAINT fk_payment_student
-                              FOREIGN KEY (student_id)
-                              REFERENCES students(id)
-                              ON DELETE CASCADE,
+                          CONSTRAINT payment_user_fk
+                              FOREIGN KEY (user_id)
+                                  REFERENCES users(id)
+                                  ON DELETE CASCADE,
 
-                          CONSTRAINT check_payment_method
-                              CHECK (payment_method IN (
-                                                        'CASH',
-                                                        'CARD',
-                                                        'BANK_TRANSFER',
-                                                        'ONLINE'
-                                                       )
-                                  ),
-
-                          CONSTRAINT check_payment_status
-                              CHECK (status IN (
-                                                'SUCCESS',
-                                                'PENDING',
-                                                'FAILED'
-                                               )
-                                  )
+                          CONSTRAINT check_payment_method CHECK (payment_method IN ('CASH', 'CARD', 'BANK_TRANSFER', 'ONLINE')),
+                          CONSTRAINT check_payment_status CHECK (status IN ('SUCCESS', 'PENDING', 'FAILED'))
 );
 
--- 7. ADDRESSES
--- ONE-TO-MANY
--- students 1 : N addresses
-
-CREATE TABLE addresses (
-                           id SERIAL PRIMARY KEY,
-
-                           student_id INT NOT NULL,
-
-                           address_line VARCHAR(255) NOT NULL,
-
-                           city VARCHAR(100) NOT NULL,
-
-                           country VARCHAR(100) DEFAULT 'Sri Lanka',
-
-                           address_type VARCHAR(20) DEFAULT 'HOME',
-
-                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-                           CONSTRAINT fk_address_student
-                               FOREIGN KEY (student_id)
-                               REFERENCES students(id)
-                               ON DELETE CASCADE,
-
-                           CONSTRAINT check_address_type
-                               CHECK (address_type IN (
-                                                       'HOME',
-                                                       'WORK',
-                                                       'OTHER'
-                                                      )
-                                   )
-);
-
--- 8. NOTIFICATIONS
--- ONE-TO-MANY
--- students 1 : N notifications
+-- NOTIFICATIONS
+-- STUDENT 1 : N NOTIFICATIONS
 
 CREATE TABLE notifications (
-                               id SERIAL PRIMARY KEY,
-
-                               student_id INT NOT NULL,
-
+                               id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                               user_id BIGINT NOT NULL,
                                title VARCHAR(150) NOT NULL,
-
                                message TEXT NOT NULL,
-
                                is_read BOOLEAN DEFAULT FALSE,
-
                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-                               CONSTRAINT fk_notification_student
-                                   FOREIGN KEY (student_id)
-                                   REFERENCES students(id)
-                                   ON DELETE CASCADE
+                               CONSTRAINT notification_user_fk
+                                   FOREIGN KEY (user_id)
+                                       REFERENCES users(id)
+                                       ON DELETE CASCADE,
 );
 
--- 9. STUDENT CONTACTS
--- ONE-TO-MANY
--- students 1 : N contacts
+-- STUDENT CONTACTS
+-- STUDENT 1 : N CONTACTS
 
-CREATE TABLE student_contacts (
-                                  id SERIAL PRIMARY KEY,
+CREATE TABLE contacts (
+                          id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                          user_id BIGINT NOT NULL,
+                          contact_type VARCHAR(20) NOT NULL,
+                          contact_value VARCHAR(150) NOT NULL,
+                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-                                  student_id INT NOT NULL,
+                          CONSTRAINT contact_user_fk
+                              FOREIGN KEY (user_id)
+                                  REFERENCES users(id)
+                                  ON DELETE CASCADE,
 
-                                  contact_type VARCHAR(20) NOT NULL,
-
-                                  contact_value VARCHAR(150) NOT NULL,
-
-                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-                                  CONSTRAINT fk_contact_student
-                                      FOREIGN KEY (student_id)
-                                      REFERENCES students(id)
-                                      ON DELETE CASCADE,
-
-                                  CONSTRAINT check_contact_type
-                                      CHECK (contact_type IN (
-                                                              'PHONE',
-                                                              'WHATSAPP',
-                                                              'EMAIL'
-                                                             )
-                                          )
+                          CONSTRAINT check_contact_type CHECK (contact_type IN ('PHONE', 'WHATSAPP', 'EMAIL'))
 );
 
--- 10. ORDERS
+-- 14. ORDERS
 -- STUDENT 1 : N ORDERS
--- Each order represents a purchase attempt for a course.
+-- COURSE 1 : N ORDERS
+-- PAYMENT 1 : N ORDERS
 
 CREATE TABLE orders (
-                        id SERIAL PRIMARY KEY,
-
-                        student_id INT NOT NULL,
-
-                        course_id INT NOT NULL,
-
-                        payment_id INT,
-
-                        amount DECIMAL(10, 2) NOT NULL
-                            CHECK (amount > 0),
-
+                        id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                        user_id BIGINT NOT NULL,
+                        course_id BIGINT NOT NULL,
+                        payment_id BIGINT NOT NULL ,
+                        amount DECIMAL(10, 2) NOT NULL CHECK (amount > 0),
                         status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
-
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-                        CONSTRAINT fk_order_student
-                            FOREIGN KEY (student_id)
-                                REFERENCES students(id)
+                        CONSTRAINT order_user_fk
+                            FOREIGN KEY (user_id)
+                                REFERENCES users(id)
                                 ON DELETE CASCADE,
 
-                        CONSTRAINT fk_order_course
+                        CONSTRAINT order_course_fk
                             FOREIGN KEY (course_id)
                                 REFERENCES courses(id)
                                 ON DELETE CASCADE,
 
-                        CONSTRAINT fk_order_payment
+                        CONSTRAINT order_payment_fk
                             FOREIGN KEY (payment_id)
                                 REFERENCES payments(id)
-                                ON DELETE SET NULL,
+                                ON DELETE CASCADE,
 
-                        CONSTRAINT check_order_status
-                            CHECK (
-                                status IN (
-                                           'PENDING',
-                                           'PAID',
-                                           'PAYMENT_FAILED',
-                                           'COMPLETED',
-                                           'CANCELLED'
-                                    )
-                                )
+                        CONSTRAINT check_order_status CHECK (status IN ('PENDING', 'PAID', 'PAYMENT_FAILED', 'COMPLETED', 'CANCELLED'))
 );
-
--- INDEXES
-
--- STUDENTS
-
-CREATE INDEX idx_students_name
-    ON students(name);
-
-CREATE INDEX idx_students_age
-    ON students(age);
-
--- INSTRUCTORS
-
-CREATE INDEX idx_instructors_name
-    ON instructors(name);
-
-CREATE INDEX idx_instructors_manager_id
-    ON instructors(manager_id);
-
--- COURSES
-
-CREATE INDEX idx_courses_instructor_id
-    ON courses(instructor_id);
-
--- ENROLLMENTS
-
-CREATE INDEX idx_enrollments_course_id
-    ON enrollments(course_id);
-
-CREATE INDEX idx_enrollments_status
-    ON enrollments(status);
-
-CREATE INDEX idx_enrollments_date
-    ON enrollments(enrollment_date);
-
--- PAYMENTS
-
-CREATE INDEX idx_payments_student_id
-    ON payments(student_id);
-
-CREATE INDEX idx_payments_payment_date
-    ON payments(payment_date);
-
-CREATE INDEX idx_payments_status
-    ON payments(status);
-
--- ADDRESSES
-
-CREATE INDEX idx_addresses_student_id
-    ON addresses(student_id);
-
-CREATE INDEX idx_addresses_city
-    ON addresses(city);
-
--- NOTIFICATIONS
-
-CREATE INDEX idx_notifications_student_id
-    ON notifications(student_id);
-
-CREATE INDEX idx_notifications_is_read
-    ON notifications(is_read);
-
-CREATE INDEX idx_notifications_created_at
-    ON notifications(created_at);
-
--- STUDENT CONTACTS
-
-CREATE INDEX idx_student_contacts_student_id
-    ON student_contacts(student_id);
-
-CREATE INDEX idx_student_contacts_type
-    ON student_contacts(contact_type);
-
--- STUDENT ORDERS
-
-CREATE INDEX idx_orders_student_id
-    ON orders(student_id);
-
-CREATE INDEX idx_orders_course_id
-    ON orders(course_id);
-
-CREATE INDEX idx_orders_payment_id
-    ON orders(payment_id);
-
-CREATE INDEX idx_orders_status
-    ON orders(status);

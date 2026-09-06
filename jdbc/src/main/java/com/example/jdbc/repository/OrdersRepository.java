@@ -1,7 +1,7 @@
 package com.example.jdbc.repository;
 
 import com.example.jdbc.enums.OrderStatus;
-import com.example.jdbc.model.Orders;
+import com.example.jdbc.model.Order_U;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -19,10 +19,10 @@ public class OrdersRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private static class OrdersRowMapper implements RowMapper<Orders> {
+    private static class OrdersRowMapper implements RowMapper<Order_U> {
         @Override
-        public Orders mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Orders order = new Orders();
+        public Order_U mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Order_U order = new Order_U();
             order.setId(rs.getInt("id"));
             order.setStudentId(rs.getInt("student_id"));
             order.setCourseId(rs.getInt("course_id"));
@@ -39,7 +39,7 @@ public class OrdersRepository {
     // CREATE ORDER
     // =========================================================
 
-    public Orders save(Orders order) {
+    public Order_U save(Order_U order) {
 
         String sql = """
                 INSERT INTO orders (
@@ -70,7 +70,7 @@ public class OrdersRepository {
     // FIND ORDER BY ID
     // =========================================================
 
-    public Orders findById(Integer id) {
+    public Order_U findById(Integer id) {
 
         String sql = """
                 SELECT
@@ -86,7 +86,7 @@ public class OrdersRepository {
                 WHERE id = ?
                 """;
 
-        List<Orders> orders = jdbcTemplate.query(
+        List<Order_U> orders = jdbcTemplate.query(
                 sql,
                 new OrdersRowMapper(),
                 id
@@ -101,7 +101,7 @@ public class OrdersRepository {
     // FIND ORDER BY PAYMENT ID
     // =========================================================
 
-    public Orders findByPaymentId(Integer paymentId) {
+    public Order_U findByPaymentId(Integer paymentId) {
 
         String sql = """
                 SELECT
@@ -117,7 +117,7 @@ public class OrdersRepository {
                 WHERE payment_id = ?
                 """;
 
-        List<Orders> orders = jdbcTemplate.query(
+        List<Order_U> orders = jdbcTemplate.query(
                 sql,
                 new OrdersRowMapper(),
                 paymentId
@@ -214,7 +214,7 @@ public class OrdersRepository {
     // FIND ORDERS BY STUDENT
     // =========================================================
 
-    public List<Orders> findByStudentId(
+    public List<Order_U> findByStudentId(
             Integer studentId
     ) {
 
@@ -244,7 +244,7 @@ public class OrdersRepository {
     // FIND ORDERS BY COURSE
     // =========================================================
 
-    public List<Orders> findByCourseId(
+    public List<Order_U> findByCourseId(
             Integer courseId
     ) {
 

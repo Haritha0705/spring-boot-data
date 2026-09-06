@@ -1,10 +1,18 @@
 package com.example.jdbc.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
-import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
-public class Courses {
+@Entity
+@Table(name = 'courses')
+public class Course_U {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = 'id')
     private int id;
 
     private int courseCode;
@@ -15,11 +23,15 @@ public class Courses {
 
     private int instructorId;
 
+    @ManyToMany(mappedBy = 'courses')
+    private Set<User_U> users = new HashSet<>();
+
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    public Courses() {}
+    public Course_U() {}
 
     public Integer getId() {
         return id;

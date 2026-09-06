@@ -1,6 +1,9 @@
 package com.example.jdbc.mapper;
 
 import com.example.jdbc.dto.request.StudentRequest;
+import com.example.jdbc.dto.response.AddressesResponse;
+import com.example.jdbc.dto.response.ContactsResponse;
+import com.example.jdbc.dto.response.ProfilesResponse;
 import com.example.jdbc.dto.response.StudentResponse;
 import com.example.jdbc.model.*;
 import org.springframework.stereotype.Component;
@@ -16,21 +19,21 @@ public class  StudentMapper {
         entity.setAge(request.age());
         
         if (request.addresses() != null) {
-            Addresses addresses = new Addresses();
-            addresses.setAddressLine(request.addresses().addressLine());
-            addresses.setCity(request.addresses().city());
-            addresses.setCountry(request.addresses().country());
-            addresses.setAddressType(request.addresses().addressType());
-            entity.setAddresses(addresses);
+            Address_U address = new Address_U();
+            address.setAddressLine(request.addresses().addressLine());
+            address.setCity(request.addresses().city());
+            address.setCountry(request.addresses().country());
+            address.setAddressType(request.addresses().addressType());
+            entity.setAddresses(address);
         }
         if (request.contacts() != null) {
-            Contacts contacts = new Contacts();
+            Contacts_U contacts = new Contacts_U();
             contacts.setContactType(request.contacts().contactType());
             contacts.setContactValue(request.contacts().contactValue());
             entity.setContacts(contacts);
         }
         if (request.profiles() != null) {
-            Profiles profiles = new Profiles();
+            Profile_U profiles = new Profile_U();
             profiles.setDateOfBirth(request.profiles().dateOfBirth());
             profiles.setGender(request.profiles().gender());
             profiles.setBio(request.profiles().bio());
@@ -39,7 +42,7 @@ public class  StudentMapper {
         return entity;
     }
 
-    public StudentResponse toResponse(Student entity, Addresses addresses, Profiles profiles, Contacts contacts) {
+    public StudentResponse toResponse(Student entity, AddressesResponse addresses, ProfilesResponse profiles, ContactsResponse contacts) {
         if (entity == null) return null;
         return new StudentResponse(
                 entity.getId(),

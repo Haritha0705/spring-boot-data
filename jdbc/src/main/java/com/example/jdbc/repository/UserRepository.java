@@ -1,23 +1,16 @@
 package com.example.jdbc.repository;
 
-import com.example.jdbc.model.Student;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import java.util.List;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.math.BigDecimal;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 @Repository
-public class StudentRepository {
+public class UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public StudentRepository(JdbcTemplate jdbcTemplate) {
+    public UserRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -44,7 +37,7 @@ public class StudentRepository {
         });
     }
 
-    public Student findById(Long id) {
+    public Student findById(int id) {
         String sql = "SELECT id, name, email, age, created_at, updated_at FROM students WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             Student entity = new Student();
@@ -58,14 +51,14 @@ public class StudentRepository {
         }, id);
     }
 
-    public int update(Long id, Student entity) {
+    public int update(int id, Student entity) {
         String sql = "UPDATE students SET name = ?, email = ?, age = ? WHERE id = ?";
         return jdbcTemplate.update(sql, entity.getName(),
                 entity.getEmail(),
                 entity.getAge(), id);
     }
 
-    public int delete(Long id) {
+    public int delete(int id) {
         String sql = "DELETE FROM students WHERE id = ?";
         return jdbcTemplate.update(sql, id);
     }

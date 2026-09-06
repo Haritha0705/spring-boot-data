@@ -1,27 +1,24 @@
 package com.example.jdbc.service.Impl;
 
-import com.example.jdbc.model.Courses;
-import com.example.jdbc.model.Orders;
+import com.example.jdbc.model.Course_U;
+import com.example.jdbc.model.Order_U;
 import com.example.jdbc.repository.OrdersRepository;
 import com.example.jdbc.service.OrderService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class OrderServiceImpl implements OrderService {
 
     private final OrdersRepository ordersRepository;
 
-    public OrderServiceImpl(
-            OrdersRepository ordersRepository
-    ) {
+    public OrderServiceImpl(OrdersRepository ordersRepository) {
         this.ordersRepository = ordersRepository;
     }
 
     @Override
-    public Orders createPendingOrder(
-            Integer studentId,
-            Courses course
-    ) {
+    public Order_U createPendingOrder(Integer studentId, Course_U course) {
 
-        Orders order = new Orders();
+        Order_U order = new Order_U();
 
         order.setStudentId(studentId);
         order.setCourseId(course.getId());

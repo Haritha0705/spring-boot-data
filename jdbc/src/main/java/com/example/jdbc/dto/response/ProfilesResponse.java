@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 
 public record ProfilesResponse(
 
-        int id,
+        Long id,
 
-        int studentId,
+        Long userId,
 
         LocalDateTime dateOfBirth,
 

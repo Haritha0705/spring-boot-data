@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class NotificationsMapper {
 
-    public Notifications toEntity(NotificationsRequest request) {
+    public Notification_U toEntity(NotificationsRequest request) {
         if (request == null) return null;
-        Notifications entity = new Notifications();
+        Notification_U entity = new Notification_U();
         entity.setStudentId(request.studentId());
         entity.setTitle(request.title());
         entity.setMessage(request.message());
@@ -18,7 +18,7 @@ public class NotificationsMapper {
         return entity;
     }
 
-    public NotificationsResponse toResponse(Notifications entity) {
+    public NotificationsResponse toResponse(Notification_U entity) {
         if (entity == null) return null;
         return new NotificationsResponse(
                 entity.getId(),

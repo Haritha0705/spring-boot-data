@@ -1,66 +1,71 @@
 package com.example.jdbc.model;
 
 import com.example.jdbc.enums.OrderStatus;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
-public class  Orders {
+@Entity
+@Table(name = 'orders')
+public class Order_U {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = 'id')
+    private Long id;
 
-    private int studentId;
+    @Column(name = 'user_id')
+    private Long user_id;
 
-    private int courseId;
+    @Column(name = 'course_id')
+    private Long courseId;
 
-    private int paymentId;
+    @Column(name = 'payment_id')
+    private Long paymentId;
 
     private float amount;
 
     private OrderStatus status;
 
+    @ManyToOne
+    @JoinColumn('user_id')
+    private User_U user;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    public Orders(int id, int studentId, int courseId, int paymentId, float amount, OrderStatus status) {
-        this.id = id;
-        this.studentId = studentId;
-        this.courseId = courseId;
-        this.paymentId = paymentId;
-        this.amount = amount;
-        this.status = status;
-    }
+    public Order_U() {}
 
-    public Orders() {}
-
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getStudentId() {
-        return studentId;
+    public Long getUser_id() {
+        return user_id;
     }
 
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
-    public int getCourseId() {
+    public Long getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(int courseId) {
+    public void setCourseId(Long courseId) {
         this.courseId = courseId;
     }
 
-    public int getPaymentId() {
+    public Long getPaymentId() {
         return paymentId;
     }
 
-    public void setPaymentId(int paymentId) {
+    public void setPaymentId(Long paymentId) {
         this.paymentId = paymentId;
     }
 
@@ -78,6 +83,14 @@ public class  Orders {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public User_U getUser() {
+        return user;
+    }
+
+    public void setUser(User_U user) {
+        this.user = user;
     }
 
     public LocalDateTime getCreatedAt() {

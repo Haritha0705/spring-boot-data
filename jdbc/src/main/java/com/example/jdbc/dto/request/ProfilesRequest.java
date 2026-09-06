@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public record ProfilesRequest(
 
-        int studentId,
+        Long userId,
 
         LocalDateTime dateOfBirth,
 

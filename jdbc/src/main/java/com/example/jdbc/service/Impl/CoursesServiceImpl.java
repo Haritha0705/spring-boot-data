@@ -2,7 +2,7 @@ package com.example.jdbc.service.Impl;
 
 import com.example.jdbc.dto.request.CoursesRequest;
 import com.example.jdbc.dto.response.CoursesResponse;
-import com.example.jdbc.model.Courses;
+import com.example.jdbc.model.Course_U;
 import com.example.jdbc.mapper.CoursesMapper;
 import com.example.jdbc.repository.CoursesRepository;
 import com.example.jdbc.service.CoursesService;
@@ -23,7 +23,7 @@ public class CoursesServiceImpl implements CoursesService {
 
     @Override
     public int create(CoursesRequest request) {
-        Courses entity = mapper.toEntity(request);
+        Course_U entity = mapper.toEntity(request);
         return repository.save(entity);
     }
 
@@ -39,7 +39,7 @@ public class CoursesServiceImpl implements CoursesService {
 
     @Override
     public int update(Integer id, CoursesRequest request) {
-        Courses entity = mapper.toEntity(request);
+        Course_U entity = mapper.toEntity(request);
         return repository.update(id, entity);
     }
 

@@ -1,16 +1,22 @@
 package com.example.jdbc.model;
 
 import com.example.jdbc.enums.EnrollmentStatus;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-public class Enrollments {
+@Entity
+@Table(name = 'enrollments')
+public class Enrollment_U {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = 'id')
+    private Long id;
 
-    private int studentId;
+    private Long user_id;
 
-    private int courseId;
+    private Long course_id;
 
     private LocalDateTime enrollmentDate;
 
@@ -20,30 +26,34 @@ public class Enrollments {
 
     private LocalDateTime updatedAt;
 
-    public Enrollments() {}
-
-    public Integer getId() {
+    public Enrollment_U() {}
+    
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getStudentId() {
-        return studentId;
+    public Long getUser_id() {
+        return user_id;
     }
 
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
-    public Integer getCourseId() {
-        return courseId;
+    public Long getCourse_id() {
+        return course_id;
     }
 
-    public void setCourseId(Integer courseId) {
-        this.courseId = courseId;
+    public void setCourse_id(Long course_id) {
+        this.course_id = course_id;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public LocalDateTime getEnrollmentDate() {

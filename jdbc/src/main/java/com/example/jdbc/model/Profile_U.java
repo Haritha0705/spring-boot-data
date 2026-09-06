@@ -1,12 +1,17 @@
 package com.example.jdbc.model;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
-import java.math.BigDecimal;
 
-public class Profiles {
+@Entity
+@Table(name = 'profiles')
+public class Profile_U {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = 'id')
+    private Long id;
 
     private int studentId;
 
@@ -16,21 +21,26 @@ public class Profiles {
 
     private String bio;
 
+    @OneToOne
+    @JoinColumn(name = 'id')
+    @MapsId
+    private User_U user;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    public Profiles() {}
+    public Profile_U() {}
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -71,6 +81,6 @@ public class Profiles {
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
-
+        this.createdAt = createdAt;
     }
 }

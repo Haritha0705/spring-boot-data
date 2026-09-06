@@ -6,7 +6,7 @@ public record NotificationsResponse(
 
         int id,
 
-        int studentId,
+        int UserId,
 
         String title,
 

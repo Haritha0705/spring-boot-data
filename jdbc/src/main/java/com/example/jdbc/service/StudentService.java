@@ -1,8 +1,6 @@
 package com.example.jdbc.service;
 
-import com.example.jdbc.dto.request.PaymentsRequest;
 import com.example.jdbc.dto.request.StudentRequest;
-import com.example.jdbc.dto.response.PaymentsResponse;
 import com.example.jdbc.dto.response.StudentResponse;
 import java.util.List;
 
@@ -12,12 +10,12 @@ public interface StudentService {
 
     List<StudentResponse> getAll();
 
-    StudentResponse getById(Long id);
+    StudentResponse getById(int id);
 
-    int update(Long id, StudentRequest request);
+    int update(int id, StudentRequest request);
 
-    int delete(Long id);
+    int delete(int id);
 
-    PaymentsResponse createPayment(Integer id, PaymentsRequest request);
+    String purchaseCourse(Integer studentId, Integer courseId, com.example.jdbc.dto.request.PurchaseRequest request);
 
 }

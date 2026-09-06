@@ -1,14 +1,10 @@
 package com.example.jdbc.dto.response;
 
-import com.example.jdbc.model.Addresses;
-import com.example.jdbc.model.Contacts;
-import com.example.jdbc.model.Profiles;
-
 import java.time.LocalDateTime;
 
 public record StudentResponse(
 
-        int id,
+        Long id,
 
         String name,
 
@@ -16,11 +12,11 @@ public record StudentResponse(
 
         Integer age,
 
-        Addresses addresses,
+        AddressesResponse addresses,
 
-        Profiles profiles,
+        ProfilesResponse profiles,
 
-        Contacts contacts,
+        ContactsResponse contacts,
 
         LocalDateTime createdAt,
 

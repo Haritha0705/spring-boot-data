@@ -1,12 +1,20 @@
 package com.example.jdbc.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
-public class Notifications {
+@Entity
+@Table(name = 'notifications')
+public class Notification_U {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = 'id')
     private int id;
 
-    private int studentId;
+    @Column(name = 'user_id')
+    private Long user_id;
 
     private String title;
 
@@ -14,24 +22,28 @@ public class Notifications {
 
     private Boolean isRead;
 
+    @ManyToOne
+    @JoinColumn('user_id')
+    private User_U user;
+
     private LocalDateTime createdAt;
 
-    public Notifications() {}
+    public Notification_U() {}
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getStudentId() {
-        return studentId;
+    public Long getUser_id() {
+        return user_id;
     }
 
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
     public String getTitle() {
@@ -50,12 +62,20 @@ public class Notifications {
         this.message = message;
     }
 
-    public Boolean getIsRead() {
+    public Boolean getRead() {
         return isRead;
     }
 
-    public void setIsRead(Boolean isRead) {
-        this.isRead = isRead;
+    public void setRead(Boolean read) {
+        isRead = read;
+    }
+
+    public User_U getUser() {
+        return user;
+    }
+
+    public void setUser(User_U user) {
+        this.user = user;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -65,5 +85,4 @@ public class Notifications {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-
 }

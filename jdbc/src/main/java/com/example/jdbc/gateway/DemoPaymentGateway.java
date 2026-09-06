@@ -2,7 +2,7 @@ package com.example.jdbc.gateway;
 
 import com.example.jdbc.dto.response.PaymentResult;
 import com.example.jdbc.enums.PaymentMethod;
-import com.example.jdbc.model.Payments;
+import com.example.jdbc.model.Payment_U;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -11,7 +11,7 @@ import java.util.UUID;
 public class DemoPaymentGateway implements PaymentGateway {
 
     @Override
-    public PaymentResult process(Payments payments) {
+    public PaymentResult process(Payment_U payments) {
         // Simulate gateway
         if (PaymentMethod.CARD.equals(payments.getPaymentMethod())) {
             String transactionId =

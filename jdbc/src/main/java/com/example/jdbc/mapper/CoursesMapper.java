@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CoursesMapper {
 
-    public Courses toEntity(CoursesRequest request) {
+    public Course_U toEntity(CoursesRequest request) {
         if (request == null) return null;
-        Courses entity = new Courses();
+        Course_U entity = new Course_U();
         entity.setCourseCode(request.courseCode());
         entity.setName(request.name());
         entity.setFee(request.fee());
@@ -18,7 +18,7 @@ public class CoursesMapper {
         return entity;
     }
 
-    public CoursesResponse toResponse(Courses entity) {
+    public CoursesResponse toResponse(Course_U entity) {
         if (entity == null) return null;
         return new CoursesResponse(
                 entity.getId(),

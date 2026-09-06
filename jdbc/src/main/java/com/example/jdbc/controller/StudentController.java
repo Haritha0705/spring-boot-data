@@ -1,5 +1,6 @@
 package com.example.jdbc.controller;
 
+import com.example.jdbc.dto.request.PurchaseRequest;
 import com.example.jdbc.dto.request.StudentRequest;
 import com.example.jdbc.dto.response.StudentResponse;
 import com.example.jdbc.service.StudentService;
@@ -27,18 +28,27 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public StudentResponse getById(@PathVariable Long id) {
+    public StudentResponse getById(@PathVariable int id) {
         return service.getById(id);
     }
 
     @PutMapping("/{id}")
-    public int update(@PathVariable Long id, @RequestBody StudentRequest req) {
+    public int update(@PathVariable int id, @RequestBody StudentRequest req) {
         return service.update(id, req);
     }
 
     @DeleteMapping("/{id}")
-    public int delete(@PathVariable Long id) {
+    public int delete(@PathVariable int id) {
         return service.delete(id);
+    }
+
+    @PostMapping("/{studentId}/courses/{courseId}/purchase")
+    public String purchaseCourse(
+            @PathVariable Integer studentId,
+            @PathVariable Integer courseId,
+            @RequestBody PurchaseRequest request
+    ) {
+        return service.purchaseCourse(studentId, courseId, request);
     }
 
 }

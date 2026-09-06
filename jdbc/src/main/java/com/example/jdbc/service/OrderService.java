@@ -1,11 +1,11 @@
 package com.example.jdbc.service;
 
-import com.example.jdbc.model.Courses;
-import com.example.jdbc.model.Orders;
+import com.example.jdbc.model.Course_U;
+import com.example.jdbc.model.Order_U;
 
 public interface OrderService {
 
-    Orders createPendingOrder(Integer studentId, Courses course);
+    Order_U createPendingOrder(Integer studentId, Course_U course);
 
     void markPaid(Integer orderId);
 

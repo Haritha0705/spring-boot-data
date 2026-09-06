@@ -1,16 +1,21 @@
 package com.example.jdbc.service.Impl;
 
-import com.example.jdbc.dto.request.PaymentsRequest;
 import com.example.jdbc.dto.request.StudentRequest;
-import com.example.jdbc.dto.response.PaymentsResponse;
-import com.example.jdbc.dto.response.StudentResponse;
+import com.example.jdbc.dto.response.*;
 import com.example.jdbc.exception.CourseNotFoundException;
-import com.example.jdbc.mapper.PaymentsMapper;
 import com.example.jdbc.model.*;
 import com.example.jdbc.mapper.StudentMapper;
+import com.example.jdbc.mapper.AddressesMapper;
+import com.example.jdbc.mapper.ProfilesMapper;
+import com.example.jdbc.mapper.ContactsMapper;
 import com.example.jdbc.repository.*;
 import com.example.jdbc.service.StudentService;
 import com.example.jdbc.service.EnrollmentsService;
+import com.example.jdbc.service.OrderService;
+import com.example.jdbc.service.PaymentsService;
+import com.example.jdbc.service.NotificationsService;
+import com.example.jdbc.dto.request.PurchaseRequest;
+import com.example.jdbc.dto.request.NotificationsRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Collectors;
@@ -19,26 +24,34 @@ import java.util.List;
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private final StudentRepository studentRepository;
+    private final UserRepository studentRepository;
     private final ProfilesRepository profilesRepository;
     private final ContactsRepository contactsRepository;
     private final AddressesRepository addressesRepository;
     private final StudentMapper studentMapper;
-    private final PaymentsMapper paymentsMapper;
-    private final PaymentsRepository paymentsRepository;
+    private final AddressesMapper addressesMapper;
+    private final ProfilesMapper profilesMapper;
+    private final ContactsMapper contactsMapper;
     private final CoursesRepository coursesRepository;
     private final EnrollmentsService enrollmentsService;
+    private final OrderService orderService;
+    private final PaymentsService paymentsService;
+    private final NotificationsService notificationsService;
 
-    public StudentServiceImpl(StudentRepository studentRepository, ProfilesRepository profilesRepository, ContactsRepository contactsRepository, AddressesRepository addressesRepository, StudentMapper studentMapper, PaymentsMapper paymentsMapper, PaymentsRepository paymentsRepository, CoursesRepository coursesRepository, EnrollmentsService enrollmentsService) {
+    public StudentServiceImpl(UserRepository studentRepository, ProfilesRepository profilesRepository, ContactsRepository contactsRepository, AddressesRepository addressesRepository, StudentMapper studentMapper, AddressesMapper addressesMapper, ProfilesMapper profilesMapper, ContactsMapper contactsMapper, CoursesRepository coursesRepository, EnrollmentsService enrollmentsService, OrderService orderService, PaymentsService paymentsService, NotificationsService notificationsService) {
         this.studentRepository = studentRepository;
         this.profilesRepository = profilesRepository;
         this.contactsRepository = contactsRepository;
         this.addressesRepository = addressesRepository;
         this.studentMapper = studentMapper;
-        this.paymentsMapper = paymentsMapper;
-        this.paymentsRepository = paymentsRepository;
+        this.addressesMapper = addressesMapper;
+        this.profilesMapper = profilesMapper;
+        this.contactsMapper = contactsMapper;
         this.coursesRepository = coursesRepository;
         this.enrollmentsService = enrollmentsService;
+        this.orderService = orderService;
+        this.paymentsService = paymentsService;
+        this.notificationsService = notificationsService;
     }
 
     @Override
@@ -51,7 +64,7 @@ public class StudentServiceImpl implements StudentService {
 
         if (student.getAddresses() != null) {
 
-            Addresses address = student.getAddresses();
+            Address_U address = student.getAddresses();
 
             address.setStudentId(studentId);
 
@@ -60,7 +73,7 @@ public class StudentServiceImpl implements StudentService {
 
         if (student.getContacts() != null) {
 
-            Contacts contact = student.getContacts();
+            Contacts_U contact = student.getContacts();
 
             contact.setStudentId(studentId);
 
@@ -69,7 +82,7 @@ public class StudentServiceImpl implements StudentService {
 
         if (student.getProfiles() != null) {
 
-            Profiles profile = student.getProfiles();
+            Profile_U profile = student.getProfiles();
 
             profile.setStudentId(studentId);
 
@@ -78,9 +91,9 @@ public class StudentServiceImpl implements StudentService {
 
         return studentMapper.toResponse(
                 student,
-                student.getAddresses(),
-                student.getProfiles(),
-                student.getContacts()
+                addressesMapper.toResponse(student.getAddresses()),
+                profilesMapper.toResponse(student.getProfiles()),
+                contactsMapper.toResponse(student.getContacts())
         );
     }
 
@@ -90,37 +103,61 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentResponse getById(Long id) {
+    public StudentResponse getById(int id) {
         return studentMapper.toResponse(studentRepository.findById(id), null, null, null);
     }
 
     @Override
-    public int update(Long id, StudentRequest request) {
+    public int update(int id, StudentRequest request) {
         Student entity = studentMapper.toEntity(request);
         return studentRepository.update(id, entity);
     }
 
     @Override
-    public int delete(Long id) {
+    public int delete(int id) {
         return studentRepository.delete(id);
     }
 
     @Override
-    public PaymentsResponse createPayment(Integer id, PaymentsRequest request) {
+    @Transactional
+    public String purchaseCourse(Integer studentId, Integer courseId, PurchaseRequest request) {
+        // 1. Fetch Course
+        Course_U course = coursesRepository.findById(courseId);
+        if (course == null) {
+            throw new CourseNotFoundException("Course not found");
+        }
 
-        Courses course = coursesRepository.findById(id);
+        // 2. Validate Not Enrolled
+        enrollmentsService.validateNotEnrolled(studentId, courseId);
 
-        if (course == null) throw new CourseNotFoundException("Course not found");
+        // 3. Create Pending Order
+        Order_U order = orderService.createPendingOrder(studentId, course);
 
-        enrollmentsService.validateNotEnrolled(request.studentId(), course.getId());
+        // 4. Create Pending Payment
+        Payment_U payment = paymentsService.createPendingPayment(order, request);
 
-        Payments payments = paymentsMapper.toEntity(request);
-        payments.setStudentId(request.studentId());
+        // 5. Process Payment
+        PaymentResult result = paymentsService.process(payment);
 
-        paymentsRepository.save(payments);
+        if (result.success()) {
+            // 6a. Handle Success
+            paymentsService.markSuccessful(payment.getId(), result.transactionId());
+            orderService.markPaid(order.getId());
+            enrollmentsService.enroll(studentId, courseId);
 
-        enrollmentsService.enroll(request.studentId(), course.getId());
+            NotificationsRequest notifReq = new NotificationsRequest(studentId, "Course Purchase Successful", "You have successfully purchased and enrolled in " + course.getName(), false);
+            notificationsService.create(notifReq);
 
-        return paymentsMapper.toResponse(payments);
+            return "Successfully purchased course: " + course.getName();
+        } else {
+            // 6b. Handle Failure
+            paymentsService.markFailed(payment.getId(), result.message());
+            orderService.markFailed(order.getId());
+
+            NotificationsRequest notifReq = new NotificationsRequest(studentId, "Course Purchase Failed", "Payment failed for course " + course.getName() + ". Reason: " + result.message(), false);
+            notificationsService.create(notifReq);
+
+            throw new RuntimeException("Payment failed: " + result.message());
+        }
     }
 }

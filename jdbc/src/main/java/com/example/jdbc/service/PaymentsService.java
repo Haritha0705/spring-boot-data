@@ -1,32 +1,18 @@
 package com.example.jdbc.service;
 
-import com.example.jdbc.dto.request.PaymentsRequest;
 import com.example.jdbc.dto.request.PurchaseRequest;
 import com.example.jdbc.dto.response.PaymentResult;
-import com.example.jdbc.dto.response.PaymentsResponse;
-import com.example.jdbc.model.Orders;
-import com.example.jdbc.model.Payments;
-
-import java.util.List;
+import com.example.jdbc.model.Order_U;
+import com.example.jdbc.model.Payment_U;
 
 public interface PaymentsService {
 
-    int create(PaymentsRequest request);
+    Payment_U createPendingPayment(Order_U order, PurchaseRequest request);
 
-    List<PaymentsResponse> getAll();
+    PaymentResult process(Payment_U payment);
 
-    PaymentsResponse getById(Integer id);
+    void markSuccessful(int paymentId, String transactionId);
 
-    int update(Integer id, PaymentsRequest request);
-
-    int delete(Integer id);
-
-    Payments createPendingPayment(Orders order, PurchaseRequest request);
-
-    PaymentResult process(com.example.jdbc.model.Payments payment);
-
-    void markSuccessful(Integer paymentId, String transactionId);
-
-    void markFailed(Integer paymentId, String reason);
+    void markFailed(int paymentId, String reason);
 
 }

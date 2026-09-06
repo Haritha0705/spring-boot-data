@@ -7,7 +7,7 @@ public record AddressesResponse(
 
         int id,
 
-        int studentId,
+        Long userId,
 
         String addressLine,
 

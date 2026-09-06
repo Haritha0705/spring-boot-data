@@ -8,7 +8,7 @@ public record ContactsResponse(
 
         int id,
 
-        int studentId,
+        Long userId,
 
         ContactType contactType,
 
